@@ -87,15 +87,13 @@ defmodule Program do
   def solve do
     {numbers, boards} = input() |> InputParser.parse()
 
-    case play_round(numbers, boards) do
-      {board, last_number} ->
-        unmarked_sum = board |> Board.unmarked_numbers() |> Enum.sum()
-        result = unmarked_sum * last_number
-        IO.inspect(result)
+    {last_winner, last_number} = play(numbers, boards) |> List.last()
 
-      _ ->
-        IO.puts("no winner")
-    end
+    unmarked_sum = last_winner |> Board.unmarked_numbers() |> Enum.sum()
+
+    result = unmarked_sum * last_number
+
+    IO.inspect(result)
   end
 
   defp input do
@@ -104,16 +102,18 @@ defmodule Program do
     |> String.split("\n")
   end
 
-  defp play_round([], _), do: nil
+  defp play(numbers, boards), do: play_round(numbers, boards, [])
 
-  defp play_round([number | rest], boards) do
+  defp play_round([], _, winners), do: winners
+
+  defp play_round([number | numbers_left], boards, winners) do
     boards = Enum.map(boards, &Board.mark_number(&1, number))
-    winner = Enum.find(boards, &Board.won?/1)
 
-    case winner do
-      %Board{} = board -> {board, number}
-      nil -> play_round(rest, boards)
-    end
+    {new_winners, boards_left} = Enum.split_with(boards, &Board.won?/1)
+
+    new_winners = Enum.map(new_winners, & {&1, number})
+
+    play_round(numbers_left, boards_left, winners ++ new_winners)
   end
 end
 
