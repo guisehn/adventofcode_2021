@@ -6,8 +6,8 @@ defmodule Program do
     |> IO.inspect()
   end
 
-  def run_days(fishes, 0), do: fishes
-  def run_days(fishes, days_left), do: run_days(new_day(fishes), days_left - 1)
+  defp run_days(fishes, 0), do: fishes
+  defp run_days(fishes, days_left), do: run_days(new_day(fishes), days_left - 1)
 
   defp input do
     File.read!("input.txt")
