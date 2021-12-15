@@ -90,7 +90,7 @@ defmodule Program do
 
     folds
     |> Enum.reduce(matrix, fn fold, matrix -> Paper.fold(matrix, fold) end)
-    |> Enum.map(&Enum.join(&1, ""))
+    |> Enum.map(&Enum.join(&1, " "))
     |> Enum.join("\n")
     |> IO.puts()
   end
