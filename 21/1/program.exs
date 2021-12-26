@@ -24,8 +24,6 @@ end
 defmodule Player do
   defstruct [:id, :position, score: 0]
 
-  @type t :: %Player{position: integer, score: integer}
-
   def play(%Player{position: position, score: score} = player) do
     numbers = for _ <- 1..3, do: Dice.roll()
     new_position = move(position, numbers)
@@ -36,11 +34,8 @@ defmodule Player do
   def won?(_), do: false
 
   defp move(position, numbers) do
-    case position + Enum.sum(numbers) do
-      n when n > 10 ->
-        rem = rem(n, 10)
-        if rem == 0, do: 10, else: rem
-
+    case rem(position + Enum.sum(numbers), 10) do
+      0 -> 10
       n -> n
     end
   end
